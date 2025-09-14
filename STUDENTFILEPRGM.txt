@@ -1,0 +1,158 @@
+import java.io.*;
+import java.util.*;
+public class StudentRecordSimple {
+static String fileName = "students.txt";
+public static void addStudent(String id, String name, String age) {
+try (FileWriter fw = new FileWriter(fileName, true);
+BufferedWriter bw = new BufferedWriter(fw)) {
+bw.write(id + "," + name + "," + age);
+bw.newLine();
+System.out.println("Student added successfully!");
+ } catch (IOException e) {
+e.printStackTrace();
+ }
+ }
+ public static void readStudents() {
+try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+String line;
+System.out.println("\n--- Student Records ---");
+while ((line = br.readLine()) != null) {
+String[] data = line.split(",");
+System.out.println("ID: " + data[0] + ", Name: " + data[1] + ", Age: " + data[2]);
+ }
+} catch (IOException e) {
+ System.out.println("No records found!");
+ }
+}
+public static void updateStudent(String id, String newName, String newAge) {
+File inputFile = new File(fileName);
+File tempFile = new File("temp.txt");
+try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+String line;
+boolean updated = false;
+while ((line = br.readLine()) != null) {
+ String[] data = line.split(",");
+if (data[0].equals(id)) {
+bw.write(id + "," + newName + "," + newAge);
+ updated = true;
+} else {
+ bw.write(line);
+}
+bw.newLine();
+}
+if (updated) {
+System.out.println("Record updated successfully!");
+ } else {
+System.out.println("ID not found!");
+}
+} catch (IOException e) {
+ e.printStackTrace();
+}
+inputFile.delete();
+tempFile.renameTo(inputFile);
+}
+public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+int choice;
+do {
+ System.out.println("\n--- Student Record Management ---");
+ System.out.println("1. Add Student");
+ System.out.println("2. View Students");
+ System.out.println("3. Update Student");
+ System.out.println("4. Exit");
+ System.out.print("Enter choice: ");
+ choice = sc.nextInt();
+ sc.nextLine(); 
+ switch (choice) {
+ case 1:
+ System.out.print("Enter ID: ");
+ String id = sc.nextLine();
+ System.out.print("Enter Name: ");
+ String name = sc.nextLine();
+ System.out.print("Enter Age: ");
+ String age = sc.nextLine();
+ addStudent(id, name, age);
+ break;
+ case 2:
+ readStudents();
+ break;
+ case 3:
+ System.out.print("Enter ID to update: ");
+ String uid = sc.nextLine();
+ System.out.print("Enter New Name: ");
+ String newName = sc.nextLine();
+ System.out.print("Enter New Age: ");
+ String newAge = sc.nextLine();
+ updateStudent(uid, newName, newAge);
+ break;
+ case 4:
+ System.out.println("Exiting...");
+ break;
+ default:
+ System.out.println("Invalid choice!");
+ }
+} while (choice != 4);
+sc.close();
+}
+}
+
+
+
+OUTPUT:
+
+C:\Users\gokul>javac StudentRecordSimple.java
+
+C:\Users\gokul>java StudentRecordSimple
+
+--- Student Record Management ---
+1. Add Student
+2. View Students
+3. Update Student
+4. Exit
+Enter choice: 1
+Enter ID: 101
+Enter Name: Jee
+Enter Age: 18
+Student added successfully!
+
+--- Student Record Management ---
+1. Add Student
+2. View Students
+3. Update Student
+4. Exit
+Enter choice: 1
+Enter ID: 102
+Enter Name: Jeebika
+Enter Age: 19
+Student added successfully!
+
+--- Student Record Management ---
+1. Add Student
+2. View Students
+3. Update Student
+4. Exit
+Enter choice: 3
+Enter ID to update: 102
+Enter New Name: JeeBee
+Enter New Age: 18
+Record updated successfully!
+
+--- Student Record Management ---
+1. Add Student
+2. View Students
+3. Update Student
+4. Exit
+Enter choice: 2
+
+--- Student Records ---
+ID: 101, Name: Jee, Age: 18
+ID: 102, Name: JeeBee, Age: 18
+
+--- Student Record Management ---
+1. Add Student
+2. View Students
+3. Update Student
+4. Exit
+Enter choice: 4
+Exiting...
